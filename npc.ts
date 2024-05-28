@@ -1,5 +1,4 @@
 import { findAllValidSequences } from "./backtrack";
-import { DEFAULT_STOP_AFTER_DELAY } from "./const";
 import {
   ChaosOptions,
   ExploreOptions,
@@ -7,10 +6,10 @@ import {
   ScenarioOptions,
 } from "./types";
 import {
+  delay,
   endWithResults,
   hanleRequest,
   pickBasedOnImportance,
-  stopAfterDelay,
 } from "./utils";
 
 export class Npc {
@@ -31,12 +30,12 @@ export class Npc {
   async chaos(options: ChaosOptions) {
     const results: RequestResult[] = [];
 
-    stopAfterDelay(options.stopAfterDelay ?? DEFAULT_STOP_AFTER_DELAY)?.then(
-      () => {
+    if (options.stopAfterDelay) {
+      delay(options.stopAfterDelay).then(() => {
         console.log(`Stopped after delay: ${options.stopAfterDelay}ms`);
         endWithResults(results, 0);
-      }
-    );
+      });
+    }
 
     while (true) {
       const endpoint = pickBasedOnImportance(options.endpoints);
@@ -53,12 +52,12 @@ export class Npc {
   async scenario(options: ScenarioOptions) {
     const results: RequestResult[] = [];
 
-    stopAfterDelay(options.stopAfterDelay ?? DEFAULT_STOP_AFTER_DELAY)?.then(
-      () => {
+    if (options.stopAfterDelay) {
+      delay(options.stopAfterDelay).then(() => {
         console.log(`Stopped after delay: ${options.stopAfterDelay}ms`);
         endWithResults(results, 0);
-      }
-    );
+      });
+    }
 
     for (const endpoint of options.scenario) {
       await hanleRequest({
@@ -76,12 +75,12 @@ export class Npc {
     const results: RequestResult[] = [];
     const paths = findAllValidSequences(options.endpoints);
 
-    stopAfterDelay(options.stopAfterDelay ?? DEFAULT_STOP_AFTER_DELAY)?.then(
-      () => {
+    if (options.stopAfterDelay) {
+      delay(options.stopAfterDelay).then(() => {
         console.log(`Stopped after delay: ${options.stopAfterDelay}ms`);
         endWithResults(results, 0);
-      }
-    );
+      });
+    }
 
     for (const path of paths) {
       for (const tag of path) {

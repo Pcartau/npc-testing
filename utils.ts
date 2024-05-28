@@ -62,12 +62,6 @@ export async function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export function stopAfterDelay(delay: number) {
-  if (delay < 0) return;
-
-  return new Promise((resolve) => setTimeout(resolve, delay));
-}
-
 export function pickBasedOnImportance(endpoints: ChaosEndpoint[]) {
   // https://dev.to/jacktt/understanding-the-weighted-random-algorithm-581p
 
