@@ -1,4 +1,4 @@
 export const DEFAULT_MAX_RETRY = 3;
 export const DEFAULT_TIMEOUT = 5000;
 export const DEFAULT_DELAY_BETWEEN_REQUESTS = 0;
-export const DEFAULT_STOP_AFTER_STATUS = [500, 404, 400];
+export const DEFAULT_STOP_AFTER_STATUS = [500, 404, 400, 401];

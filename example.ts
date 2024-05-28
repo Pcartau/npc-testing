@@ -75,5 +75,5 @@ npc.chaos({
   stopAfterDelay: 5000,
   // timeout: 2000,
   // maxRetry: 1,
-  // stopAfterStatus: 500,
+  // stopAfterStatus: [500],
 });
