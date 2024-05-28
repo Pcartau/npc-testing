@@ -1,9 +1,5 @@
 import { findAllValidSequences } from "./backtrack";
-import {
-  DEFAULT_DELAY_BETWEEN_REQUESTS,
-  DEFAULT_STOP_AFTER_DELAY,
-  DEFAULT_STOP_AFTER_STATUS,
-} from "./const";
+import { DEFAULT_STOP_AFTER_DELAY } from "./const";
 import {
   ChaosOptions,
   ExploreOptions,
@@ -11,12 +7,8 @@ import {
   ScenarioOptions,
 } from "./types";
 import {
-  addToResults,
-  buildEndpointBody,
-  buildEndpointPath,
-  delay,
   endWithResults,
-  makeRequest,
+  hanleRequestResponse,
   pickBasedOnImportance,
   stopAfterDelay,
 } from "./utils";
@@ -48,30 +40,13 @@ export class Npc {
 
     while (true) {
       const endpoint = pickBasedOnImportance(options.endpoints);
-      const response = await makeRequest({
-        options,
+      await hanleRequestResponse({
         endpoint,
+        options,
+        results,
         basePath: this.basePath,
         authToken: this.authToken,
       });
-
-      if (response) {
-        if (
-          (options.stopAfterStatus ?? DEFAULT_STOP_AFTER_STATUS).includes(
-            response.status
-          )
-        ) {
-          console.error(`Status code: ${response.status}`);
-          await addToResults(this.basePath, results, response, endpoint);
-          endWithResults(results, 1);
-        }
-        await addToResults(this.basePath, results, response, endpoint);
-      } else {
-        endWithResults(results, 1);
-      }
-      await delay(
-        options.delayBetweenRequests ?? DEFAULT_DELAY_BETWEEN_REQUESTS
-      );
     }
   }
 
@@ -86,33 +61,13 @@ export class Npc {
     );
 
     for (const endpoint of options.scenario) {
-      endpoint.body = buildEndpointBody(endpoint, results);
-      endpoint.path = buildEndpointPath(endpoint, results);
-
-      const response = await makeRequest({
-        options,
+      await hanleRequestResponse({
         endpoint,
+        options,
+        results,
         basePath: this.basePath,
         authToken: this.authToken,
       });
-
-      if (response) {
-        if (
-          (options.stopAfterStatus ?? DEFAULT_STOP_AFTER_STATUS).includes(
-            response.status
-          )
-        ) {
-          console.error(`Status code: ${response.status}`);
-          await addToResults(this.basePath, results, response, endpoint);
-          endWithResults(results, 1);
-        }
-        await addToResults(this.basePath, results, response, endpoint);
-      } else {
-        endWithResults(results, 1);
-      }
-      await delay(
-        options.delayBetweenRequests ?? DEFAULT_DELAY_BETWEEN_REQUESTS
-      );
     }
     endWithResults(results, 0);
   }
@@ -137,31 +92,13 @@ export class Npc {
           console.error("Endpoint not found");
           return endWithResults(results, 1);
         }
-        endpoint.body = buildEndpointBody(endpoint, results);
-        endpoint.path = buildEndpointPath(endpoint, results);
-        const response = await makeRequest({
-          options,
+        await hanleRequestResponse({
           endpoint,
+          options,
+          results,
           basePath: this.basePath,
           authToken: this.authToken,
         });
-        if (response) {
-          if (
-            (options.stopAfterStatus ?? DEFAULT_STOP_AFTER_STATUS).includes(
-              response.status
-            )
-          ) {
-            console.error(`Status code: ${response.status}`);
-            await addToResults(this.basePath, results, response, endpoint);
-            endWithResults(results, 1);
-          }
-          await addToResults(this.basePath, results, response, endpoint);
-        } else {
-          endWithResults(results, 1);
-        }
-        await delay(
-          options.delayBetweenRequests ?? DEFAULT_DELAY_BETWEEN_REQUESTS
-        );
       }
     }
     endWithResults(results, 0);

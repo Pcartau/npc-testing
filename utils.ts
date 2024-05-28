@@ -1,4 +1,9 @@
-import { DEFAULT_MAX_RETRY, DEFAULT_TIMEOUT } from "./const";
+import {
+  DEFAULT_DELAY_BETWEEN_REQUESTS,
+  DEFAULT_MAX_RETRY,
+  DEFAULT_STOP_AFTER_STATUS,
+  DEFAULT_TIMEOUT,
+} from "./const";
 import {
   ChaosEndpoint,
   ChaosOptions,
@@ -221,4 +226,36 @@ export async function makeRequest({
       return handleErrorMessage(error);
     }
   }
+}
+
+export async function hanleRequestResponse({
+  endpoint,
+  results,
+  options,
+  basePath,
+  authToken,
+}) {
+  endpoint.body = buildEndpointBody(endpoint, results);
+  endpoint.path = buildEndpointPath(endpoint, results);
+  const response = await makeRequest({
+    options,
+    endpoint,
+    basePath,
+    authToken,
+  });
+  if (response) {
+    if (
+      (options.stopAfterStatus ?? DEFAULT_STOP_AFTER_STATUS).includes(
+        response.status
+      )
+    ) {
+      console.error(`Status code: ${response.status}`);
+      await addToResults(basePath, results, response, endpoint);
+      endWithResults(results, 1);
+    }
+    await addToResults(basePath, results, response, endpoint);
+  } else {
+    endWithResults(results, 1);
+  }
+  await delay(options.delayBetweenRequests ?? DEFAULT_DELAY_BETWEEN_REQUESTS);
 }
