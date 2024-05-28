@@ -8,7 +8,7 @@ import {
 } from "./types";
 import {
   endWithResults,
-  hanleRequestResponse,
+  hanleRequest,
   pickBasedOnImportance,
   stopAfterDelay,
 } from "./utils";
@@ -40,7 +40,7 @@ export class Npc {
 
     while (true) {
       const endpoint = pickBasedOnImportance(options.endpoints);
-      await hanleRequestResponse({
+      await hanleRequest({
         endpoint,
         options,
         results,
@@ -61,7 +61,7 @@ export class Npc {
     );
 
     for (const endpoint of options.scenario) {
-      await hanleRequestResponse({
+      await hanleRequest({
         endpoint,
         options,
         results,
@@ -92,7 +92,7 @@ export class Npc {
           console.error("Endpoint not found");
           return endWithResults(results, 1);
         }
-        await hanleRequestResponse({
+        await hanleRequest({
           endpoint,
           options,
           results,

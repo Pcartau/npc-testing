@@ -228,7 +228,7 @@ export async function makeRequest({
   }
 }
 
-export async function hanleRequestResponse({
+export async function hanleRequest({
   endpoint,
   results,
   options,
